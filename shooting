@@ -185,16 +185,16 @@ function beam(x,y){
       return
     }
 
-    if(keys["l"] && x < 280) {
+    if(keys["ArrowRight"] && x < 280) {
       x = x + speed
     }
-    if(keys["j"] && x > 0 ) {
+    if(keys["ArrowLeft"] && x > 0 ) {
       x = x - speed
     }
-    if(keys["k"] && y < 280 ) {
+    if(keys["ArrowDown"] && y < 280 ) {
       y = y + speed
     }
-    if(keys["i"] && y > 0 ) {
+    if(keys["ArrowUp"] && y > 0 ) {
       y = y - speed
     }
 
