@@ -19,410 +19,253 @@
 <body>
   <h1>Rian's Shooting Game</h1>
 
-  <!-- ゲーム画面 -->
   <canvas id="game" width="300" height="300"></canvas>
-  const c = document.getElementById("game")
-  const ctx = c.getContext("2d")
 
-  let x = 150
-  let y = 250
-  const speed = 3
-  const size = 20
-  let keys = {}
-  let bullet=[]
-  let ptime=0
-  const pinterval=20
+  <!-- ここにゲームの JavaScript を入れる -->
+  <script>
+    const c = document.getElementById("game")
+    const ctx = c.getContext("2d")
 
-  let enemies=[]
-  let etime=0
-  let einterval=120
-  let ebullet=[]
+    let x = 150
+    let y = 250
+    const speed = 3
+    const size = 20
+    let keys = {}
+    let bullet=[]
+    let ptime=0
+    const pinterval=20
 
-  let bossx=130
-  let bossy=-100
-  let bossapear=false
-  let bossready=false
-  let bosstime=0
-  let homingshottime=0
-  let homingshottinterval=80
-  let spreadshottime=0
-  let spreadshotinterval=200
-  let straighttime=0
-  let straightinterval=200
-  let straightduring=0
-  let straightduringinterval=240
-  let flash = 0;
-  let flashInterval = 60;
-  let flashSide = null;
-  let bosshp=30
-  let death=false
+    let enemies=[]
+    let etime=0
+    let einterval=120
+    let ebullet=[]
 
+    let bossx=130
+    let bossy=-100
+    let bossapear=false
+    let bossready=false
+    let bosstime=0
+    let homingshottime=0
+    let homingshottinterval=80
+    let spreadshottime=0
+    let spreadshotinterval=200
+    let straighttime=0
+    let straightinterval=200
+    let straightduring=0
+    let straightduringinterval=240
+    let flash = 0;
+    let flashInterval = 60;
+    let flashSide = null;
+    let bosshp=30
+    let death=false
 
-  function straightbullet(x,y){
-    ebullet.push({
-    x:x+size/2-5,
-    y:y+size,
-    w:10,
-    h:10,
-    dx:0,
-    dy:4
-    })
-  }
-
-  function homingbullet(ex,ey){
-    let dx=x-ex
-    let dy=y-ey
-    let len=Math.sqrt(dx*dx+dy*dy)
-
-    dx=dx/len
-    dy=dy/len
-
-    ebullet.push({
-    x:ex+size/2-5,
-    y:ey+size,
-    w:10,
-    h:10,
-    dx:dx*2.5,
-    dy:dy*2.5,
-    })
-  }
-
-  function spreadbullet(ex, ey) {
-  const angles = [-30,-15, 0,15,  30]; // 拡散角度
-  const speed = 4;
-
-  for (let a of angles) {
-    let rad = (a+90) * Math.PI / 180;
-    let dx = Math.cos(rad) * speed;
-    let dy = Math.sin(rad) * speed;
-
-    ebullet.push({
-      x: ex + size/2 - 5,
-      y: ey + size,
-      w: 10,
-      h:10,
-      dx: dx,
-      dy: dy
-    });
-  }
-}
-
-function beam(x,y){
-   ebullet.push({
-    x:x+size/2-5,
-    y:y+size,
-    w:10,
-    h:10,
-    dx:0,
-    dy:15
-    })
-}
-
-
-  let leveltimer=0
-  let levelinterval=400
-  let score=0
-  let gameover=false
-
-  function hit(a,b){
-    return(
-    a.x < b.x + b.w &&
-    a.x + a.w > b.x &&
-    a.y < b.y + b.h &&
-    a.y + a.h > b.y
-    )
-  }
-
-  function GAMEOVER(){
-    x=150
-    y=250
-    bullet=[]
-    enemies=[]
-    ebullet=[]
-    etime=0
-    einterval=120
-    ptime=0
-    leveltimer=0
-    levelinterval=400
-    score=0
-    gameover=false
-    death=false
-    draw()
-  }
-    
-  document.addEventListener("keydown", (e) => {
-    keys[e.key] = true
-
-    if(keys["r"] && (gameover || death )){
-      GAMEOVER()
+    function straightbullet(x,y){
+      ebullet.push({
+        x:x+size/2-5,
+        y:y+size,
+        w:10,
+        h:10,
+        dx:0,
+        dy:4
+      })
     }
-  })
 
-  document.addEventListener("keyup", (e) => {
-    keys[e.key] = false
-  })
+    function homingbullet(ex,ey){
+      let dx=x-ex
+      let dy=y-ey
+      let len=Math.sqrt(dx*dx+dy*dy)
 
-  function loop(){
-    ctx.clearRect(0,0,c.width,c.height)
+      dx=dx/len
+      dy=dy/len
+
+      ebullet.push({
+        x:ex+size/2-5,
+        y:ey+size,
+        w:10,
+        h:10,
+        dx:dx*2.5,
+        dy:dy*2.5,
+      })
+    }
+
+    function spreadbullet(ex, ey) {
+      const angles = [-30,-15, 0,15,  30];
+      const speed = 4;
+
+      for (let a of angles) {
+        let rad = (a+90) * Math.PI / 180;
+        let dx = Math.cos(rad) * speed;
+        let dy = Math.sin(rad) * speed;
+
+        ebullet.push({
+          x: ex + size/2 - 5,
+          y: ey + size,
+          w: 10,
+          h:10,
+          dx: dx,
+          dy: dy
+        });
+      }
+    }
+
+    function beam(x,y){
+      ebullet.push({
+        x:x+size/2-5,
+        y:y+size,
+        w:10,
+        h:10,
+        dx:0,
+        dy:15
+      })
+    }
+
+    let leveltimer=0
+    let levelinterval=400
+    let score=0
+    let gameover=false
+
+    function hit(a,b){
+      return(
+        a.x < b.x + b.w &&
+        a.x + a.w > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.h > b.y
+      )
+    }
+
+    function GAMEOVER(){
+      x=150
+      y=250
+      bullet=[]
+      enemies=[]
+      ebullet=[]
+      etime=0
+      einterval=120
+      ptime=0
+      leveltimer=0
+      levelinterval=400
+      score=0
+      gameover=false
+      death=false
+      draw()
+    }
+
+    document.addEventListener("keydown", (e) => {
+      keys[e.key] = true
+
+      if(keys["r"] && (gameover || death )){
+        GAMEOVER()
+      }
+    })
+
+    document.addEventListener("keyup", (e) => {
+      keys[e.key] = false
+    })
+
+    function loop(){
+      ctx.clearRect(0,0,c.width,c.height)
 
       ctx.fillStyle="white"
       ctx.font="15px Arial"
       ctx.fillText("score:"+score,200,20)
 
-    if(death){
-      ctx.fillStyle="white"
-      ctx.font="40px Arial"
-      ctx.fillText("GAME CLEAR",50,150)
-      return
-    }
-
-    if(gameover){
-      ctx.fillStyle="white"
-      ctx.font="40px Arial"
-      ctx.fillText("GAME OVER",50,150)
-      ctx.font="20px Arial"
-      ctx.fillText("Press R to Restart", 60, 200)
-      return
-    }
-
-    if(keys["ArrowRight"] && x < 280) {
-      x = x + speed
-    }
-    if(keys["ArrowLeft"] && x > 0 ) {
-      x = x - speed
-    }
-    if(keys["ArrowDown"] && y < 280 ) {
-      y = y + speed
-    }
-    if(keys["ArrowUp"] && y > 0 ) {
-      y = y - speed
-    }
-
-    ptime=ptime+1
-
-    if(keys["z"] && ptime>pinterval){
-      bullet.push({
-        x:x+size/2-5,
-        y:y,
-        speed:6,
-        w:10,
-        h:10
-      })
-    }
-
-    ctx.fillStyle="yellow"
-    for(i=0;i<bullet.length;i=i+1){
-      let b=bullet[i]
-      b.y=b.y-b.speed
-      ctx.fillRect(b.x,b.y,b.w,b.h)
-      ptime=0
-    }
-    bullet=bullet.filter(b=>b.y>-20)
-
-    etime=etime+1
-    if(etime>einterval && score<2500){
-      enemies.push({
-        x:Math.random()*270,
-        y:-30,
-        w:30,
-        h:30,
-        speed:0.5,
-        shottimer:0,
-        type:Math.random()<0.2 ? "homing" : 
-             Math.random()<0.4 ? "spread" : "straight"
-      })
-      etime=0
-    }
-  
-    for(let e of enemies){
-      if(hit(
-        {x:x, y:y, w:size,h:size},
-        {x:e.x, y:e.y, w:e.w,h:e.h}
-      )){
-        gameover=true
+      if(death){
+        ctx.fillStyle="white"
+        ctx.font="40px Arial"
+        ctx.fillText("GAME CLEAR",50,150)
+        return
       }
-      e.y=e.y+e.speed
-      if(e.type==="homing"){ctx.fillStyle="purple"}
-      else if(e.type==="straight"){ctx.fillStyle="red"}
-      else{ctx.fillStyle="green"}
 
-      ctx.fillRect(e.x,e.y,e.w,e.h)
-
-      e.shottimer=e.shottimer+1
-      if(e.shottimer>120){
-      if(e.type==="homing"){
-         homingbullet(e.x,e.y)
-}
-      else if(e.type==="straight"){straightbullet(e.x,e.y)
+      if(gameover){
+        ctx.fillStyle="white"
+        ctx.font="40px Arial"
+        ctx.fillText("GAME OVER",50,150)
+        ctx.font="20px Arial"
+        ctx.fillText("Press R to Restart", 60, 200)
+        return
       }
-      else{spreadbullet(e.x,e.y)}
-       e.shottimer=0
-     }
-    }
 
-    ctx.fillStyle="darkred"
-    ctx.fillRect(bossx,bossy,15,70)
-    ctx.fillRect(bossx+30,bossy+10,15,40)
-    ctx.fillRect(bossx-30,bossy+10,15,40)
-    ctx.fillRect(bossx-30,bossy+20,70,15)
+      if(keys["ArrowRight"] && x < 280) x += speed
+      if(keys["ArrowLeft"] && x > 0 ) x -= speed
+      if(keys["ArrowDown"] && y < 280 ) y += speed
+      if(keys["ArrowUp"] && y > 0 ) y -= speed
 
-    if(score>=2500){
-      bossapear=true
-    }
+      ptime++
 
-    if(bossapear && bossy<30){
-      bossy=bossy+0.5
-    }
-
-    if(bossy===30){
-      bossready=true
-    }
-
-    if(bossready){
-      bosstime=bosstime+1
-      bossx=Math.sin(bosstime/40)*100+130
-    }
-
-    homingshottime=homingshottime+1
-    if(homingshottime>homingshottinterval && bossready){
-      homingbullet(bossx,bossy+40)
-      homingshottime=0
-    }
-
-    if (bossready) {
-  straighttime++;
-}
-
-if (straighttime > straightinterval && bossready) {
-
-  if (straightduring === 0) {
-    side = Math.random() < 0.5 ? "left" : "right";
-    flashSide = side;
-    flash = flashInterval;   
-  }
-
-  if (flash > 0) {
-    if (flash % 10 < 5) { 
-      ctx.fillStyle = "orange";
-      if (flashSide === "left") {
-        ctx.fillRect(bossx - 30, bossy + 20, 30, 30);
-      } else {
-        ctx.fillRect(bossx + 30, bossy + 20, 30, 30);
+      if(keys["z"] && ptime>pinterval){
+        bullet.push({
+          x:x+size/2-5,
+          y:y,
+          speed:6,
+          w:10,
+          h:10
+        })
+        ptime=0
       }
-    }
-    flash--;
-    straightduring++;            
-  }
 
-  if (flash === 0 && straighttime>straightinterval) {
-    if (side === "left") {
-      beam(bossx - 30, bossy);
-    } else {
-      beam(bossx + 30, bossy);
-    }
-  }
-
-  straightduring++;
-  if (straightduring > straightduringinterval) {
-    straighttime = 0;
-    straightduring = 0;
-  }
-}
-
-if (bosshp <= 29) {
-  spreadshottime++;
-}
-if (bosshp <= 29 && spreadshottime > spreadshotinterval) {
-
-  if (side === "left") {
-    spreadbullet(bossx + 30, bossy);
-  } else {
-    spreadbullet(bossx - 30, bossy);
-  }
-
-  spreadshottime = 0;
-}
-
-
-
-    for(let i=0;i<bullet.length;i=i+1){
-      let b=bullet[i]
-
-      for(let j=0;j<enemies.length;j=j+1){
-      let e=enemies[j]
-
-      if(hit(b,e)){
-        bullet.splice(i,1)
-        enemies.splice(j,1)
-        score=score+1000
-        break
+      ctx.fillStyle="yellow"
+      for(let b of bullet){
+        b.y -= b.speed
+        ctx.fillRect(b.x,b.y,b.w,b.h)
       }
-     }
-    }
+      bullet = bullet.filter(b=>b.y>-20)
 
-    leveltimer=leveltimer+1
-    if(leveltimer>levelinterval){
-      leveltimer=0
-      einterval=Math.max(20,einterval-10)
-    }
+      etime++
+      if(etime>einterval && score<2500){
+        enemies.push({
+          x:Math.random()*270,
+          y:-30,
+          w:30,
+          h:30,
+          speed:0.5,
+          shottimer:0,
+          type:Math.random()<0.2 ? "homing" : 
+               Math.random()<0.4 ? "spread" : "straight"
+        })
+        etime=0
+      }
 
-  ctx.fillStyle="blue"
-  ctx.fillRect(x,y,size,size)
+      for(let e of enemies){
+        if(hit({x:x,y:y,w:size,h:size},{x:e.x,y:e.y,w:e.w,h:e.h})) gameover=true
 
-  ctx.fillStyle="orange"
-  for(let b of ebullet){
-    b.y=b.y+b.dy
-    b.x=b.x+b.dx
-    ctx.fillRect(b.x, b.y, b.w, b.h)
+        e.y += e.speed
+        ctx.fillStyle = e.type==="homing" ? "purple" :
+                        e.type==="straight" ? "red" : "green"
+        ctx.fillRect(e.x,e.y,e.w,e.h)
 
-    if(hit(
-      {x:x, y:y, w:size,h:size},
-      {x:b.x, y:b.y, w:b.w,h:b.h}
-    )){
-      gameover=true
-    }
-  }
-  ebullet = ebullet.filter(b => b.y < 320)
+        e.shottimer++
+        if(e.shottimer>120){
+          if(e.type==="homing") homingbullet(e.x,e.y)
+          else if(e.type==="straight") straightbullet(e.x,e.y)
+          else spreadbullet(e.x,e.y)
+          e.shottimer=0
+        }
+      }
 
-let bossParts = [
-  { x: bossx,      y: bossy,      w: 15, h: 70 },
-  { x: bossx+30,   y: bossy+10,   w: 15, h: 40 },
-  { x: bossx-30,   y: bossy+10,   w: 15, h: 40 },
-  { x: bossx-30,   y: bossy+20,   w: 70, h: 15 }
-];
+      ctx.fillStyle="darkred"
+      ctx.fillRect(bossx,bossy,15,70)
+      ctx.fillRect(bossx+30,bossy+10,15,40)
+      ctx.fillRect(bossx-30,bossy+10,15,40)
+      ctx.fillRect(bossx-30,bossy+20,70,15)
 
-for (let part of bossParts) {
-  if(hit(
-    part,
-    {x:x,y:y,w:size,h:size}
-  )){
-    gameover = true
-  }
-}
+      if(score>=2500) bossapear=true
+      if(bossapear && bossy<30) bossy+=0.5
+      if(bossy===30) bossready=true
 
-for (let i = 0; i < bullet.length; i++) {
-  let b = bullet[i];
-
-  for (let part of bossParts) {
-    if (hit(b,part)) {
-      bullet.splice(i, 1);   
       if(bossready){
-      bosshp--;              
- bossx=1000;  
-      }
-      if (bosshp <= 0) {
-        death=true
+        bosstime++
+        bossx=Math.sin(bosstime/40)*100+130
       }
 
-      i=i-1
-      break;
+      homingshottime++
+      if(homingshottime>homingshottinterval && bossready){
+        homingbullet(bossx,bossy+40)
+        homingshottime=0
+      }
+
+      requestAnimationFrame(loop)
     }
-  }
-}
-
-    requestAnimationFrame(loop)
-}
-loop()
-  <script src="game.js"></script>
+    loop()
+  </script>
 </body>
 </html>
