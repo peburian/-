@@ -20,6 +20,8 @@ index.html
 <body>
   <h1>Rian's Shooting Game</h1>
 
+from IPython.display import HTML
+HTML("""
 <canvas id="game" width="300" height="300" style="background-color:black"></canvas>
 <script>
   const c = document.getElementById("game")
@@ -407,7 +409,7 @@ if (spreadshottime > spreadshotinterval) {
       if(hit(b,e)){
         bullet.splice(i,1)
         enemies.splice(j,1)
-        score=score+1000
+        score=score+100
         break
       }
      }
@@ -476,5 +478,6 @@ for (let i = 0; i < bullet.length; i++) {
     requestAnimationFrame(loop)}
   loop()
   </script>
+
 </body>
 </html>
