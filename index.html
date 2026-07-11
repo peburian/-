@@ -45,15 +45,11 @@ index.html
   let bossready=false
   let bosstime=0
   let homingshottime=0
-  let homingshottinterval=80
   let spreadshottime=0
-  let spreadshotinterval=200
   let straighttime=0
-  let straightinterval=200
   let straightduring=0
   let straightduringinterval=240
   let flash = 0;
-  let flashInterval = 60;
   let flashSide = null;
   let bosshp=30
   let death=false
@@ -89,7 +85,7 @@ index.html
   }
 
   function spreadbullet(ex, ey) {
-  const angles = [-30,-15, 0,15,  30]; // 拡散角度
+  const angles = [-30,0,30]; // 拡散角度
   const speed = 4;
 
   for (let a of angles) {
@@ -121,9 +117,9 @@ function beam(x,y){
 
 
   let leveltimer=0
-  let levelinterval=400
   let score=0
   let gameover=false
+  difficulty=null
 
   function hit(a,b){
     return(
@@ -148,11 +144,56 @@ function beam(x,y){
     score=0
     gameover=false
     death=false
+     bossx=130
+   bossy=-100
+   bossapear=false
+   bossready=false
+   bosstime=0
+   homingshottime=0
+   spreadshottime=0
+   straighttime=0
+   straightduring=0
+   flash = 0;
+   flashSide = null;
+   bosshp=30
+   death=false
+   difficulty=null
     loop()
   }
     
   document.addEventListener("keydown", (e) => {
     keys[e.key] = true
+
+    if(keys["1"]){
+      straightinterval=200
+      spreadshotinterval=250
+      homingshottinterval=120
+      levelinterval=400
+      espeed=0.4
+      flashInterval=60
+      flashflash=10
+      difficulty="easy"
+    }
+    if(keys["2"]){
+      straightinterval=200
+      spreadshotinterval=200
+      homingshottinterval=80
+      levelinterval=400
+      espeed=0.5
+      flashInterval=60
+      flashflash=10
+      difficulty="normal"
+    }
+    if(keys["3"]){
+      straightinterval=200
+      spreadshotinterval=150
+      homingshottinterval=50
+      levelinterval=250
+      espeed=0.7
+      flashInterval=30
+      flashflash=8
+      difficulty="hard"
+    }
 
     if(keys["r"] && (gameover || death )){
       GAMEOVER()
@@ -163,8 +204,18 @@ function beam(x,y){
     keys[e.key] = false
   })
 
-  function loop(){
+  function draw(){
     ctx.clearRect(0,0,c.width,c.height)
+
+      if(difficulty===null){
+        ctx.fillStyle="white"
+        ctx.font="30px Arial"
+        ctx.fillText("1→easy",50,80)
+        ctx.fillText("2→noraml",50,130)
+        ctx.fillText("3→hard",50,180)
+        requestAnimationFrame(loop)
+        return
+      }
 
       ctx.fillStyle="white"
       ctx.font="15px Arial"
@@ -173,7 +224,8 @@ function beam(x,y){
     if(death){
       ctx.fillStyle="white"
       ctx.font="40px Arial"
-      ctx.fillText("GAME CLEAR",50,150)
+      ctx.fillText("GAME CLEAR",30,110)
+      ctx.fillText("Retry→R", 70, 200)
       return
     }
 
@@ -227,7 +279,7 @@ function beam(x,y){
         y:-30,
         w:30,
         h:30,
-        speed:0.5,
+        speed:espeed,
         shottimer:0,
         type:Math.random()<0.2 ? "homing" : 
              Math.random()<0.4 ? "spread" : "straight"
@@ -303,12 +355,12 @@ if (straighttime > straightinterval && bossready) {
   }
 
   if (flash > 0) {
-    if (flash % 10 < 5) { 
+    if (flash % flashflash < 5) { 
       ctx.fillStyle = "orange";
       if (flashSide === "left") {
-        ctx.fillRect(bossx - 30, bossy + 20, 30, 30);
+        ctx.fillRect(bossx - 40, bossy + 25, 30, 30);
       } else {
-        ctx.fillRect(bossx + 30, bossy + 20, 30, 30);
+        ctx.fillRect(bossx + 20, bossy + 25, 30, 30);
       }
     }
     flash--;
@@ -330,10 +382,10 @@ if (straighttime > straightinterval && bossready) {
   }
 }
 
-if (bosshp <= 29) {
+if (bosshp <= 15) {
   spreadshottime++;
 }
-if (bosshp <= 29 && spreadshottime > spreadshotinterval) {
+if (spreadshottime > spreadshotinterval) {
 
   if (side === "left") {
     spreadbullet(bossx + 30, bossy);
